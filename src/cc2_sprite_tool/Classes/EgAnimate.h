@@ -9,8 +9,10 @@
 #ifndef  _W_EGG_DELEGATE_H_
 #define  _W_EGG_DELEGATE_H_
 
+#define  ENABLE_ANIMATE_RW 1
+
 #include <vector>
-#include "cocoa\CCGeometry.h"
+#include "CCGeometry.h"
 
 namespace cocos2d
 {
@@ -19,42 +21,60 @@ namespace cocos2d
     class CCSprite;
 };
 
+#if ENABLE_ANIMATE_RW
+class TiXmlDocument;
+#endif
+
 namespace CC2_EGG
 {
     cocos2d::CCSprite* CopySprite(cocos2d::CCSprite* src_);
-
+    
     class Animate
     {
+#if   ENABLE_ANIMATE_RW
+        friend  void SetAnimateData(Animate*  outAnm_,  TiXmlDocument* inData_);
+        friend  void GetAnimateData(Animate* inAnm_,  TiXmlDocument* outData_);
+#endif
     public:
         Animate();
         ~Animate();
         
-        void AddFrame(cocos2d::CCArray* frame_, const cocos2d::CCSize size_);
-        void AddSprOnNowFrame(cocos2d::CCSprite* spr_);
-        void DeleteFrame(const int& index_);
-        void SwapFrame(const int& sw1_, const int& sw2_);
-        void RunWithTargetLayer(cocos2d::CCLayer* dest_);
-        void SetTargetLayer(cocos2d::CCLayer* dest_);
-
-        void RemoveFormTargetLayer();
-        void Update(const float& dTime_);
-
-        void Play();
-        void Stop();
-        void SetFSpeedPerSecond(const float& spd_ = 20.0f);
+        void addFrame(cocos2d::CCArray* frame_, const cocos2d::CCSize size_, const float& fTime_ = 15.0f);
+        void addSprOnNowFrame(cocos2d::CCSprite* spr_);
+        void deleteFrame(const int& index_);
+        void swapFrame(const int& sw1_, const int& sw2_);
+        void runWithTargetLayer(cocos2d::CCLayer* dest_);
+        void setTargetLayer(cocos2d::CCLayer* dest_);
         
-        cocos2d::CCArray* GetNowFrameSprites();
-        const cocos2d::CCRect& GetBoundBox();
+        void copyFrame(const int& index_);
 
-        cocos2d::CCSprite* GetFatherSpr() {return m_anmFramesFather;}
+        void removeFormTargetLayer();
+        void update(const float& dTime_);
+
+        void play();
+        void stop();
+        void setFSpeedPerSecond(const float& spd_ = 20.0f);
+        
+        //only for edit//
+        void setAnimateCentre(const cocos2d::CCPoint& acPoint_);
+        ///////////////
+        
+        cocos2d::CCArray* getFrameSprites(const int& index_);
+        cocos2d::CCArray* getAllFrames() {return m_animateFrames;}
+        
+        const cocos2d::CCRect& getBoundBox();
+
+        cocos2d::CCSprite* getFatherSpr() {return m_anmFramesFather;}
     private:
         cocos2d::CCArray* m_animateFrames;//a ccarray fill with sprites ccarray...
         typedef std::vector<cocos2d::CCSize> CCSizeArray;
         CCSizeArray  m_animateFramesSize;
+        std::vector<float> m_animateFramesTime;
         cocos2d::CCSprite* m_anmFramesFather;
         unsigned int m_nowFrame;
         cocos2d::CCLayer* m_destDrawLayer;
         cocos2d::CCRect m_boundBox;
+
         float m_changeFrameTime;
         float m_timeCount;
         bool m_bIsStop;
@@ -62,6 +82,11 @@ namespace CC2_EGG
         void _addNowFrame();
         void _removeNowFrame();
     };
+    
+#if  ENABLE_ANIMATE_RW
+    void SetAnimateData(Animate*  outAnm_,  TiXmlDocument* inData_);
+    void GetAnimateData(Animate* inAnm_,  TiXmlDocument* outData_);
+#endif
 };
 
 

@@ -75,7 +75,7 @@ private:
 //==================================================
 
 #ifdef _WIN32
-std::string G2U(const char* gb2312)
+std::string G2U(const char* gb2312);
 #define ZH2U(zh_) (G2U(zh_).c_str())
 #endif
 

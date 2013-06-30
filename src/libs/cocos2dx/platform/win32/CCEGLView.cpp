@@ -186,6 +186,8 @@ CCEGLView::CCEGLView()
 , m_wndproc(NULL)
 , m_fFrameZoomFactor(1.0f)
 , m_bSupportTouch(false)
+, m_win32Msg(0)
+, m_win32Param(0)
 {
     strcpy(m_szViewName, "Cocos2dxWin32");
 }
@@ -457,6 +459,8 @@ LRESULT CCEGLView::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
     case WM_KEYDOWN:
+        m_win32Msg = message;
+        m_win32Param = wParam;
         if (wParam == VK_F1 || wParam == VK_F2)
         {
             CCDirector* pDirector = CCDirector::sharedDirector();
@@ -474,6 +478,8 @@ LRESULT CCEGLView::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
     case WM_KEYUP:
+        m_win32Msg = message;
+        m_win32Param = wParam;
         if ( m_lpfnAccelerometerKeyHook!=NULL )
         {
             (*m_lpfnAccelerometerKeyHook)( message,wParam,lParam );

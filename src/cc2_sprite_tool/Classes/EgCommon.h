@@ -37,6 +37,8 @@ public:
     
     void goLeftPage();
     void goRightPage();
+
+    void clean();
     
     void addList(cocos2d::CCSprite* spr_, bool bIsDetail = true);
     
@@ -74,9 +76,40 @@ private:
 
 //==================================================
 
+namespace cocos2d
+{
+    class CCMenuItemImageFont:public CCMenuItemImage
+    {
+    public:
+        CCMenuItemImageFont(){}
+        virtual ~CCMenuItemImageFont(){}
+        void setFont(const char* str_, const int& size_);
+        virtual void selected();
+        virtual void unselected();
+        static CCMenuItemImageFont* create(const char *normalImage, const char *selectedImage,
+                                                         CCObject* target, SEL_MenuHandler selector);
+
+        static CCMenuItemImageFont* create();
+
+    protected:
+        cocos2d::CCLabelTTF* m_labelTTF;
+        cocos2d::CCPoint m_labelPos;
+    };
+}
+
+//==================================================
+
+
+
 #ifdef _WIN32
+#define KEY_DOWN(vk_code) (GetAsyncKeyState(vk_code) & 0x8000 ? 1 : 0)  
+#define KEY_UP(vk_code) (GetAsyncKeyState(vk_code) & 0x8000 ? 0 : 1)  
+
 std::string G2U(const char* gb2312);
 #define ZH2U(zh_) (G2U(zh_).c_str())
+
+std::string W2C(const wchar_t* src_);
+
 #endif
 
 #ifdef  __APPLE__
@@ -109,8 +142,8 @@ void GetEdge1DPoint(const float& p1, const float& p2, const float& pi, float& ou
 void GetEdge2DPoint(const cocos2d::CCPoint& p1, const cocos2d::CCPoint& p2, const cocos2d::CCPoint& pi, cocos2d::CCPoint& outp);
 void SetBoxTextByVar(const int& var_, cocos2d::extension::CCEditBox* box_);
 
-cocos2d::CCMenuItemFont* AddFontBtn(const char *value_, cocos2d::CCObject* target_, cocos2d::SEL_MenuHandler selector_,
-                                                               const cocos2d::CCPoint& pos_, cocos2d::CCMenu* menu_, const int& fontSize_ = 22);
+cocos2d::CCMenuItem* AddFontBtn(const char *value_, cocos2d::CCObject* target_, cocos2d::SEL_MenuHandler selector_,
+                                                               const cocos2d::CCPoint& pos_, cocos2d::CCMenu* menu_, const int& fontSize_ = 17);
 
 cocos2d::CCSprite* CheckSpriteTouch(cocos2d::CCArray* sprArray_, const cocos2d::CCPoint& touch_,
                                                            int& outIndex_, bool isNewSpr_ = false);
@@ -122,12 +155,20 @@ void AddSprArrToLayer(cocos2d::CCArray* sprArray_, cocos2d::CCLayer* lay_);
 void RemoveSprArrFromLayer(cocos2d::CCArray* sprArray_, cocos2d::CCLayer* lay_);
 
 cocos2d::extension::CCEditBox* AddNumEditBox(const float& ui_x_rate_, const float& ui_y_rate_,
-                                                                            cocos2d::extension::CCEditBoxDelegate* delegate_, cocos2d::CCLayer* lay_ = NULL,
-                                                                            const float& sizeW_ = 0.35f, const float& sizeH_ = 0.05f);
+                                                                            cocos2d::extension::CCEditBoxDelegate* delegate_,
+                                                                            cocos2d::CCLayer* lay_ = NULL,
+                                                                            const float& sizeW_ = 0.35f, const float& sizeH_ = 0.035f);
 
 cocos2d::extension::CCControlSlider* AddSliderGroup(const float& ui_x_rate_, const float& ui_y_rate_,
                                                                                     const float& min_, const float&  max_, const float&  now_,
                                                                                     cocos2d::extension::SEL_CCControlHandler hander_,
                                                                                     cocos2d::CCObject* target_, cocos2d::CCLayer* lay_);
+
+cocos2d::CCMenuItemImage* AddFontImgBtn(const char* value_, const char* downPicFile_, const char* upPicFile_,
+                                                                       cocos2d::CCObject* target_, cocos2d::SEL_MenuHandler selector_,
+                                                                       const cocos2d::CCPoint& pos_, cocos2d::CCMenu* menu_, const int& fontSize_ = 22);
+
+cocos2d::CCLabelTTF* SetStr2ImgBtn(cocos2d::CCMenuItemImage* btn_, const char* str_, const int& size_);
+
 
 #endif//endif EGG_COMMON_H_

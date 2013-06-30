@@ -11,15 +11,30 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\libs\tinyxml\tinystr.cpp" />
+    <ClCompile Include="..\..\libs\tinyxml\tinyxml.cpp" />
+    <ClCompile Include="..\..\libs\tinyxml\tinyxmlerror.cpp" />
+    <ClCompile Include="..\..\libs\tinyxml\tinyxmlparser.cpp" />
+    <ClCompile Include="..\Classes\AnimateEdit.cpp" />
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
     <ClCompile Include="..\Classes\EgAnimate.cpp" />
+    <ClCompile Include="..\Classes\EgCommon.cpp" />
+    <ClCompile Include="..\Classes\FrameEdit.cpp" />
     <ClCompile Include="..\Classes\MainEditLayer.cpp" />
+    <ClCompile Include="..\Classes\RectEdit.cpp" />
     <ClCompile Include="..\platform\win32\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\libs\tinyxml\tinystr.h" />
+    <ClInclude Include="..\..\libs\tinyxml\tinyxml.h" />
+    <ClInclude Include="..\Classes\AnimateEdit.h" />
     <ClInclude Include="..\Classes\AppDelegate.h" />
+    <ClInclude Include="..\Classes\BaseEditScene.hpp" />
     <ClInclude Include="..\Classes\EgAnimate.h" />
+    <ClInclude Include="..\Classes\EgCommon.h" />
+    <ClInclude Include="..\Classes\FrameEdit.h" />
     <ClInclude Include="..\Classes\MainEditLayer.h" />
+    <ClInclude Include="..\Classes\RectEdit.h" />
     <ClInclude Include="..\platform\win32\main.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -53,12 +68,12 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)..\..\bin\</OutDir>
-    <IntDir>$(Configuration).win32\</IntDir>
+    <IntDir>$(Configuration).win32\release</IntDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>.;..\Classes;..\..\libs\cocos2dx;..\..\libs\cocos2dx\include;..\..\libs\cocos2dx\kazmath\include;..\..\libs\cocos2dx\platform\win32;..\..\libs\cocos2dx\platform\third_party\win32;..\..\libs\cocos2dx\platform\third_party\win32\OGLES;..\..\libs\CocosDenshion\include;..\..\libs\extensions;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..\Classes;..\..\libs\tinyxml;..\..\libs\cocos2dx;..\..\libs\cocos2dx\cocoa;..\..\libs\cocos2dx\include;..\..\libs\cocos2dx\kazmath\include;..\..\libs\cocos2dx\platform\win32;..\..\libs\cocos2dx\platform\third_party\win32;..\..\libs\cocos2dx\platform\third_party\win32\OGLES;..\..\libs\CocosDenshion\include;..\..\libs\extensions;..\..\libs\extensions\GUI\CCEditBox;..\..\libs\extensions\GUI\CCScrollView;..\..\libs\extensions\GUI\CCControlExtension;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
@@ -97,7 +112,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>.;..\Classes;..\..\libs\cocos2dx;..\..\libs\cocos2dx\include;..\..\libs\cocos2dx\kazmath\include;..\..\libs\cocos2dx\platform\win32;..\..\libs\cocos2dx\platform\third_party\win32;..\..\libs\cocos2dx\platform\third_party\win32\OGLES;..\..\libs\CocosDenshion\include;..\..\libs\extensions;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..\Classes;..\..\libs\tinyxml;..\..\libs\cocos2dx;..\..\libs\cocos2dx\cocoa;..\..\libs\cocos2dx\include;..\..\libs\cocos2dx\kazmath\include;..\..\libs\cocos2dx\platform\win32;..\..\libs\cocos2dx\platform\third_party\win32;..\..\libs\cocos2dx\platform\third_party\win32\OGLES;..\..\libs\CocosDenshion\include;..\..\libs\extensions;..\..\libs\extensions\GUI\CCEditBox;..\..\libs\extensions\GUI\CCScrollView;..\..\libs\extensions\GUI\CCControlExtension;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>

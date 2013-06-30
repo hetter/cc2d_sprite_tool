@@ -81,10 +81,22 @@ public:
     */
     static CCEGLView* sharedOpenGLView();
 
-    //
+    //add for tool use
     const WCHAR* getDragOnFile();
+    void getWin32MsgAndParam(UINT& msg_, WPARAM& param_) 
+    {
+        param_ = m_win32Param;
+        msg_ = m_win32Msg;
+    }
+    void resetWin32MsgAndParam()
+    {
+        m_win32Param = 0;
+        m_win32Msg = 0;
+    }
 protected:
-
+    WCHAR m_dragFileName[MAX_PATH];
+    WPARAM m_win32Param;
+    UINT   m_win32Msg;
 private:
     bool m_bCaptured;
     HWND m_hWnd;
@@ -97,8 +109,6 @@ private:
     CUSTOM_WND_PROC m_wndproc;
 
     float m_fFrameZoomFactor;
-
-    WCHAR m_dragFileName[MAX_PATH];
 };
 
 NS_CC_END

@@ -17,6 +17,8 @@ public:
     
     void showOnDestLayer(cocos2d::CCLayer* dest_, const int& lay_ = 100000);
     void closeOnDestLayer();
+
+    void update(const float& dt_);
     
     //only one click
     bool ccTouchBegan   (cocos2d::CCTouch* touch_);
@@ -43,6 +45,8 @@ public:
     void addFrameCallBack(CCObject* pSender_);
     void refreshCallBack(CCObject* pSender_);
     ////////////////////
+
+    void refresh(bool bIsReLoad = false);
 protected:
     enum EDIT_STATE
     {
@@ -91,7 +95,10 @@ protected:
     cocos2d::CCMenuItemFont* m_detailBtn;
     DETAIL_CLICK_STATE m_detailClick;
     EDIT_STATE m_nowState;
-    
+public:
+    void setAnmFrameIndex(const int& index_);
+private:
+    int m_anmFrameIndex;
 //extension gui part//
 public:
     virtual void editBoxEditingDidBegin(cocos2d::extension::CCEditBox* editBox);

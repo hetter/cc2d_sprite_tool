@@ -17,6 +17,8 @@ public:
     
     void showOnDestLayer(cocos2d::CCLayer* dest_, const int& lay_ = 100000);
     void closeOnDestLayer();
+
+    void update(const float& dt_);
     
     //only one click
     bool ccTouchBegan   (cocos2d::CCTouch* touch_);
@@ -44,6 +46,10 @@ protected:
     void _go_to_edit(const EDIT_STATE& state_);
     void _modifyRectSet();
 protected:    
+    //switch
+    bool m_bIsMoveSelBox;
+    bool m_bIsSetSelBoxEnd;
+
     //component of List    
     IconListComponent*  m_nowUseList;
     cocos2d::CCArray*    m_nowContactArr;

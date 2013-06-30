@@ -25,13 +25,27 @@ public:
     bool ccTouchBegan   (cocos2d::CCTouch* touch_, cocos2d:: CCEvent* event_);
     void ccTouchMoved  (cocos2d::CCTouch* touch_, cocos2d:: CCEvent* event_);
     void ccTouchEnded   (cocos2d::CCTouch* touch_, cocos2d:: CCEvent* event_);
+
+    BaseEditScene* getEditScene(const std::string& id_) {return m_editScenenMap[id_];}
+
+    std::string getAnmFilePath() {return m_anmFilePath;}
+private:
+    void _saveAnmFile();
+    void _loadAnmFile();
+
+public:
+    static const int FILE_PATH_LENTH = 1024;
 private:
     BaseEditScene* m_nowEditScene;
     std::map<std::string, BaseEditScene*> m_editScenenMap;
     
+    wchar_t m_nowOpenDlgFile[FILE_PATH_LENTH];
+
     std::wstring m_nowDragFile;
+    std::string m_anmFilePath;
     
-   
+    bool m_bIsSaveAnmFile;
+    bool m_bIsLoadAnmFile;
  //===============public elements==================
 public:
     cocos2d::CCArray*      getUseBigSprArray()         {return m_useBigSprArr;}
@@ -93,6 +107,11 @@ public:
     void changeStateAnimateCallBack(CCObject* pSender_);
     void saveCallBack(CCObject* pSender_);
     void loadCallBack(CCObject* pSender_);
+
+    void backBlackCallBack(CCObject* pSender_);
+    void backWhiteCallBack(CCObject* pSender_);
+    void backGrayCallBack(CCObject* pSender_);
+    void backRandomCallBack(CCObject* pSender_);
     
     // a selector callback
     void menuCloseCallback(CCObject* pSender);

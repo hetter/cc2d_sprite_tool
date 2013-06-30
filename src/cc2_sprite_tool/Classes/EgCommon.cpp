@@ -182,6 +182,14 @@ void IconListComponent::goRightPage()
     _goPage(m_nowPage);
 }
 
+void IconListComponent::clean()
+{
+    m_trueList->removeAllObjects();
+    m_showList->removeAllObjects();
+    m_layer->removeAllChildren();
+    m_nowPage = 0;
+}
+
 int IconListComponent::getTrueIndexByShowIndex(const int& showIndex_)
 {
     return (showIndex_ + m_nowPage * m_maxShow);
@@ -270,6 +278,67 @@ void IconListComponent::_goPage(const int& page_)
 }
 //==============================================
 
+void CCMenuItemImageFont::setFont(const char* str_, const int& size_)
+{
+    CCSprite* imgSpr = (CCSprite*)m_pNormalImage;
+    float imgW = imgSpr->getTextureRect().size.width;
+    float imgH = imgSpr->getTextureRect().size.height;
+
+    m_labelTTF = CCLabelTTF::create(str_, "Î¢ÈíÑÅºÚ", size_);
+    m_labelTTF->setColor(ccc3(60, 233, 60));
+    
+    
+    float strW = m_labelTTF->getTextureRect().size.width + m_labelTTF->getTextureRect().size.width * 0.25f;
+    float strH = m_labelTTF->getTextureRect().size.height + m_labelTTF->getTextureRect().size.height * 0.25f;
+    
+    
+    setScaleX(strW / imgW);
+    setScaleY(strH / imgH);
+    
+    addChild(m_labelTTF, 1);
+    
+    m_labelTTF->setScaleY(imgH / strH);
+    m_labelTTF->setScaleX(imgW/ strW);
+    m_labelTTF->setPosition(ccp(imgW/2, imgH/2 - m_labelTTF->getFontSize()*0.05f));
+    m_labelPos = m_labelTTF->getPosition();
+}
+
+CCMenuItemImageFont* CCMenuItemImageFont::create()
+{
+    CCMenuItemImageFont *pRet = new CCMenuItemImageFont();
+    if (pRet && pRet->init())
+    {
+        pRet->autorelease();
+        return pRet;
+    }
+    CC_SAFE_DELETE(pRet);
+    return NULL;
+}
+
+CCMenuItemImageFont* CCMenuItemImageFont::create(const char *normalImage, const char *selectedImage,
+                                                                                      cocos2d::CCObject *target, SEL_MenuHandler selector)
+{
+    CCMenuItemImageFont *pRet = create();
+    pRet->initWithNormalImage(normalImage, selectedImage, NULL, target, selector);
+    return pRet;
+}
+
+
+void CCMenuItemImageFont::selected()
+{
+    CCMenuItemImage::selected();
+    m_labelTTF->setPosition(ccpAdd(m_labelPos, ccp(0 , -m_labelTTF->getFontSize()*0.05f)));
+}
+
+void CCMenuItemImageFont::unselected()
+{
+    CCMenuItemImage::unselected();
+    m_labelTTF->setPosition(m_labelPos);
+}
+
+
+//==============================================
+
 std::string GetResPath(const char* res_)
 {
     std::string ret = SOURCE_ROOT;
@@ -280,7 +349,6 @@ std::string GetResPath(const char* res_)
 #ifdef _WIN32
 std::string G2U(const char* gb2312)
 {
-    
     int len = MultiByteToWideChar(CP_ACP, 0, gb2312, -1, NULL, 0);
     wchar_t* wstr = new wchar_t[len+1];
     memset(wstr, 0, len+1);
@@ -292,6 +360,17 @@ std::string G2U(const char* gb2312)
     if(wstr) delete[] wstr;
     std::string ret(str);
     delete[] str;
+    return ret;
+}
+
+std::string W2C(const wchar_t* src_)
+{
+    int len = WideCharToMultiByte(CP_UTF8, 0, src_, -1, NULL, 0, NULL, NULL);
+    char* str = new char[len+1];
+    memset(str, 0, len+1);
+    WideCharToMultiByte(CP_ACP, 0, src_, -1, str, len, NULL, NULL);
+    std::string ret = str;
+    delete [] str;
     return ret;
 }
 #endif
@@ -377,12 +456,18 @@ void SetBoxTextByVar(const int& var_, cocos2d::extension::CCEditBox* box_)
     box_->setText(toBox);
 }
 
-CCMenuItemFont* AddFontBtn(const char *value_, CCObject* target_, SEL_MenuHandler selector_, const CCPoint& pos_,
+CCMenuItem* AddFontBtn(const char *value_, CCObject* target_, SEL_MenuHandler selector_, const CCPoint& pos_,
                                                 CCMenu* menu_, const int& fontSize_)
 {
-    CCMenuItemFont::setFontSize(fontSize_);
-    CCMenuItemFont* addBtn = CCMenuItemFont::create(value_, target_, selector_);
+
+    
+    CCMenuItemImageFont* addBtn = CCMenuItemImageFont::create(RES_PATH("btn01.png"),
+                                                              RES_PATH("btn02.png"),
+                                                              target_,
+                                                              selector_);
+    addBtn->setZOrder(UI_BACK_ELEMENTS_Z_ORDER);
     addBtn->setPosition(pos_);
+    addBtn->setFont(value_, fontSize_);
     menu_->addChild(addBtn);
     return addBtn;
 }
@@ -451,7 +536,8 @@ cocos2d::extension::CCEditBox* AddNumEditBox(const float& ui_x_rate_, const floa
 {
     CCSize size = CCDirector::sharedDirector()->getWinSize();
     CCEditBox* editBox = CCEditBox::create(CCSizeMake(UI_BACK_WIDTH * sizeW_,  UI_BACK_HEIGHT * sizeH_),
-                                                                   CCScale9Sprite::create(RES_PATH("green_edit.png")));
+                                                      CCScale9Sprite::create(RES_PATH("green_edit.png")));
+    editBox->setFontColor(ccc3(0,0,0));
     editBox->setOpacity(200);
     editBox->setPosition(ccp(size.width - UI_BACK_WIDTH/2 + UI_BACK_WIDTH * ui_x_rate_, size.height* ui_y_rate_));
     if(lay_)
@@ -479,3 +565,31 @@ cocos2d::extension::CCControlSlider* AddSliderGroup(const float& ui_x_rate_, con
     
     return slider;
 }
+
+cocos2d::CCMenuItemImage* AddFontImgBtn(const char* value_, const char* downPicFile_, const char* upPicFile_,
+                                        cocos2d::CCObject* target_, cocos2d::SEL_MenuHandler selector_,
+                                        const cocos2d::CCPoint& pos_, cocos2d::CCMenu* menu_, const int& fontSize_)
+{
+    return NULL;
+}
+
+CCLabelTTF* SetStr2ImgBtn(cocos2d::CCMenuItemImage* btn_, const char* str_, const int& size_)
+{
+    CCSprite* imgSpr = (CCSprite*)btn_->getNormalImage();
+    float imgW = imgSpr->getTextureRect().size.width;
+    float imgH = imgSpr->getTextureRect().size.height;
+    
+    CCLabelTTF* pLabel = CCLabelTTF::create(str_, "Thonburi", size_);
+    
+    float strW = strlen(str_) * size_ + 20.0f;
+    float strH = size_ + 10.0f;
+    
+    
+    btn_->setScaleX(strW / imgW);
+    btn_->setScaleY(strH / imgH);
+
+    pLabel->setPosition(btn_->getPosition());
+    return pLabel;
+}
+
+

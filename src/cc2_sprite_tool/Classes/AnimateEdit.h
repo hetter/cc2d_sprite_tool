@@ -3,7 +3,7 @@
 
 #include "BaseEditScene.hpp"
 
-class AnimateEditScene:public BaseEditScene
+class AnimateEditScene:public BaseEditScene, public cocos2d::extension::CCEditBoxDelegate
 {
 public:
     AnimateEditScene();
@@ -38,6 +38,14 @@ protected:
     int m_lastSelectindex;
     cocos2d::CCArray* m_showFrame;
     cocos2d::CCSprite* m_listMask;
+    //extension gui part//
+public:
+    virtual void editBoxEditingDidBegin(cocos2d::extension::CCEditBox* editBox);
+    virtual void editBoxEditingDidEnd(cocos2d::extension::CCEditBox* editBox);
+    virtual void editBoxTextChanged(cocos2d::extension::CCEditBox* editBox, const std::string& text);
+    virtual void editBoxReturn(cocos2d::extension::CCEditBox* editBox);
+protected:
+    cocos2d::extension::CCEditBox *m_editFrameSpeed;
 };
 
 

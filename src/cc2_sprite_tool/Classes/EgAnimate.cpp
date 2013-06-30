@@ -3,6 +3,8 @@
 
 #if  ENABLE_ANIMATE_RW
 #include "MainEditLayer.h"
+#include "EgCommon.h"
+
 #include "tinyxml.h"
 #endif
 
@@ -260,7 +262,9 @@ namespace CC2_EGG
             while(NULL != sprite)
             {
                 //SMainLayer->
-                CCTexture2D* tex = SMainLayer->getUseSprTex(sprite->ToElement()->Attribute("img_path"));
+                //truePath
+                std::string truePath = SMainLayer->getAnmFilePath() + sprite->ToElement()->Attribute("img_path");
+                CCTexture2D* tex = SMainLayer->getUseSprTex(truePath);
                 
                 double rx,ry,rw,rh;
                 sprite->ToElement()->Attribute("rect_ox",  &rx);
@@ -273,7 +277,7 @@ namespace CC2_EGG
                 SMainLayer->addCutRect(realSpr->getTexture(), realSpr->getTextureRect());
                 
                 double px,py,ax,ay,sx,sy,alpha;
-                int  isFx,isFy;
+                int  isFx,isFy,zOrder;
                 sprite->ToElement()->Attribute("pos_x",  &px);
                 sprite->ToElement()->Attribute("pos_y",  &py);
                 sprite->ToElement()->Attribute("rot_x",  &ax);
@@ -283,8 +287,15 @@ namespace CC2_EGG
                 sprite->ToElement()->Attribute("alpha",  &alpha);
                 sprite->ToElement()->Attribute("is_flipX",  &isFx);
                 sprite->ToElement()->Attribute("is_flipY",  &isFy);
+
+                sprite->ToElement()->Attribute("zOrder", &zOrder);
                 
+                CCSize size = CCDirector::sharedDirector()->getWinSize();
+                CCPoint drawPoint = ccp((size.width - UI_BACK_WIDTH)/2, size.height/2);
+                px += drawPoint.x;
+                py += drawPoint.y;
                 realSpr->setPosition(ccp(px,py));
+
                 realSpr->setRotationX(ax);
                 realSpr->setRotationY(ay);
                 realSpr->setScaleX(sx);
@@ -292,6 +303,7 @@ namespace CC2_EGG
                 realSpr->setOpacity(alpha);
                 realSpr->setFlipX(isFx);
                 realSpr->setFlipY(isFy);
+                realSpr->setZOrder(zOrder);
                 
                 nowFrame->addObject(realSpr);
                 
@@ -339,15 +351,24 @@ namespace CC2_EGG
                 allSprites->LinkEndChild(sprite);
                 
                 CCSprite* fSpr = (CCSprite*)nowFrame->objectAtIndex(j);
-                //SMainLayer->
-                sprite->SetAttribute("img_path", SMainLayer->getUseSprPath(fSpr->getTexture()).c_str());//temp temp temp
+
+                std::string relPath = SMainLayer->getUseSprPath(fSpr->getTexture());
+                int pos = relPath.find_last_of("\\");
+                if(pos != -1)
+                    relPath = relPath.substr(pos + 1, relPath.size() - pos - 1);
+
+                sprite->SetAttribute("img_path", relPath.c_str());//temp temp temp
+
                 sprite->SetAttribute("rect_ox",  fSpr->getTextureRect().origin.x);
                 sprite->SetAttribute("rect_oy",  fSpr->getTextureRect().origin.y);
                 sprite->SetAttribute("rect_w",  fSpr->getTextureRect().size.width);
                 sprite->SetAttribute("rect_h",  fSpr->getTextureRect().size.height);
                 
-                sprite->SetAttribute("pos_x",  fSpr->getPosition().x);
-                sprite->SetAttribute("pos_y",  fSpr->getPosition().y);
+                CCSize size = CCDirector::sharedDirector()->getWinSize();
+                CCPoint drawPoint = ccp((size.width - UI_BACK_WIDTH)/2, size.height/2);
+
+                sprite->SetAttribute("pos_x",  fSpr->getPosition().x - drawPoint.x);
+                sprite->SetAttribute("pos_y",  fSpr->getPosition().y - drawPoint.y);
                 sprite->SetAttribute("rot_x",  fSpr->getRotationX());
                 sprite->SetAttribute("rot_y",  fSpr->getRotationY());
                 sprite->SetAttribute("scale_X",  fSpr->getScaleX());
@@ -355,6 +376,8 @@ namespace CC2_EGG
                 sprite->SetAttribute("alpha",  fSpr->getOpacity());
                 sprite->SetAttribute("is_flipX",  fSpr->isFlipX());
                 sprite->SetAttribute("is_flipY",  fSpr->isFlipX());
+
+                sprite->SetAttribute("zOrder",  fSpr->getZOrder());
             }
             frame->SetAttribute("fps_time",  inAnm_->m_animateFramesTime[i]);
             frame->SetAttribute("bound_box_w", inAnm_->m_animateFramesSize[i].width);

@@ -65,6 +65,25 @@ namespace CC2_EGG
         const cocos2d::CCRect& getBoundBox();
 
         cocos2d::CCSprite* getFatherSpr() {return m_anmFramesFather;}
+
+        //add for tools//
+        float getFrameTime(const int& index_)
+        {
+            return m_animateFramesTime[index_];
+        }
+        cocos2d::CCSize getFrameBox(const int& index_)
+        {
+            return m_animateFramesSize[index_];
+        }
+        void setFrameBox(const int& index_, const cocos2d::CCSize& size_)
+        {
+            m_animateFramesSize[index_] = size_;
+        }
+        void setFrameTime(const int& index_, const float& time_)
+        {
+            m_animateFramesTime[index_] = time_;
+        }
+        ////////////////
     private:
         cocos2d::CCArray* m_animateFrames;//a ccarray fill with sprites ccarray...
         typedef std::vector<cocos2d::CCSize> CCSizeArray;
